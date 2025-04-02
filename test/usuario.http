@@ -1,0 +1,42 @@
+### 
+GET http://localhost:3000/usuarios
+Authorization: Bearer <token>
+
+### 
+GET http://localhost:3000/usuarios/1
+Authorization: Bearer <token>
+
+### 
+POST http://localhost:3000/usuarios
+Content-Type: application/json
+Authorization: Bearer <token>
+
+{
+    "nome": "S3nh4F0rt3",
+    "telefone": "S3nh4F0rt3",
+    "email": "miguel@email.com",
+    "senha": "S3nh4F0rt3",
+
+}
+
+### 
+PATCH  http://localhost:3000/usuarios/1
+Content-Type: application/json
+Authorization: Bearer <token>
+
+{
+    "nome": "ALTERADO"
+}
+
+### 
+DELETE  http://localhost:3000/usuarios/1
+Authorization: Bearer <token>
+
+### 
+POST http://localhost:3000/usuarios/entrar
+Content-Type: application/json
+
+{
+    "email": "miguel@email.com",
+    "senha": "S3nh4F0rt3"
+}
