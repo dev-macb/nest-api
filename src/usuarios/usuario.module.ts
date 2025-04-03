@@ -16,7 +16,7 @@ import { UsuarioController } from './usuario.controller';
             inject: [ConfigService],
             useFactory: (configService: ConfigService) => ({
                 secret: configService.getOrThrow('JWT_USUARIO'),
-                signOptions: { expiresIn: '60s' },
+                signOptions: { expiresIn: '1h' },
             })
         })
     ],

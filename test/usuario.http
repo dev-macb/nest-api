@@ -12,9 +12,9 @@ Content-Type: application/json
 Authorization: Bearer <token>
 
 {
-    "nome": "S3nh4F0rt3",
+    "nome": "Fulano da Silva",
     "telefone": "S3nh4F0rt3",
-    "email": "miguel@email.com",
+    "email": "fulano@email.com",
     "senha": "S3nh4F0rt3",
 
 }
@@ -37,6 +37,6 @@ POST http://localhost:3000/usuarios/entrar
 Content-Type: application/json
 
 {
-    "email": "miguel@email.com",
+    "email": "fulano@email.com",
     "senha": "S3nh4F0rt3"
 }

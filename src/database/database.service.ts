@@ -14,9 +14,9 @@ class DatabaseService {
         await this.dataSource.transaction(async (base) => {
             const kairos = base.create(Usuario, {
                 id: 1,
-                nome: 'Miguel Alves',
+                nome: 'Fulano da Silva',
                 telefone: '(11) 1111-1111',
-                email: 'miguel@email.com',
+                email: 'fulano@email.com',
                 senha: '$2b$10$NnyDjxjPa82hPUTyfBDqpeOyTbCQMAB4lx/wtjO6BXRmBm3ySQWKK',
                 ativo: true,
                 criadoEm: new Date(),
