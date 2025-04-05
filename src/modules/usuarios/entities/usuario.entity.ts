@@ -1,10 +1,14 @@
-import { Exclude } from "class-transformer";
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Exclude } from 'class-transformer';
+import { TiposDeUsuario } from 'src/common/enums/TiposDeUsuarios';
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity('usuarios')
 class Usuario {
     @PrimaryGeneratedColumn()
     id: number;
+
+    @Column({ enum: TiposDeUsuario, default: TiposDeUsuario.COMUM })
+    tipo: TiposDeUsuario;
 
     @Column({ unique: true })
     nome: string;

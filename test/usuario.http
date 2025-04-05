@@ -1,6 +1,6 @@
 ### 
 GET http://localhost:3000/usuarios
-Authorization: Bearer <token>
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZEFkbWluaXN0cmFkb3IiOjEsImlhdCI6MTc0Mzg3OTg1MiwiZXhwIjoxNzQzODgzNDUyfQ.rXfy2vRMx7y2nKhdNn1NFoSMLJ9SBMN_NFa4iVA-IrQ
 
 ### 
 GET http://localhost:3000/usuarios/1
@@ -9,34 +9,33 @@ Authorization: Bearer <token>
 ### 
 POST http://localhost:3000/usuarios
 Content-Type: application/json
-Authorization: Bearer <token>
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidGlwbyI6MSwiaWF0IjoxNzQzODgyNzU5LCJleHAiOjE3NDM4ODYzNTl9.I9iMik4zuM1jpZrF9YMCrW4iOzSMRU5AcTfZqG-xDfo
 
 {
-    "nome": "Fulano da Silva",
+    "nome": "Fulano 2",
     "telefone": "S3nh4F0rt3",
-    "email": "fulano@email.com",
-    "senha": "S3nh4F0rt3",
-
+    "email": "fulano2@email.com",
+    "senha": "S3nh4F0rt3"
 }
 
 ### 
 PATCH  http://localhost:3000/usuarios/1
 Content-Type: application/json
-Authorization: Bearer <token>
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZEFkbWluaXN0cmFkb3IiOjEsImlhdCI6MTc0Mzg3OTk4NiwiZXhwIjoxNzQzODgzNTg2fQ.obGjQgr_1J_vgmOjn-4V7YFgoMBlYdbmbeztXFN6tXU
 
 {
-    "nome": "ALTERADO"
+    "tipo": 1
 }
 
 ### 
-DELETE  http://localhost:3000/usuarios/1
-Authorization: Bearer <token>
+DELETE  http://localhost:3000/usuarios/2
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidGlwbyI6MSwiaWF0IjoxNzQzODgyNzU5LCJleHAiOjE3NDM4ODYzNTl9.I9iMik4zuM1jpZrF9YMCrW4iOzSMRU5AcTfZqG-xDfo
 
 ### 
 POST http://localhost:3000/usuarios/entrar
 Content-Type: application/json
 
 {
-    "email": "fulano@email.com",
+    "email": "administrador@email.com",
     "senha": "S3nh4F0rt3"
 }

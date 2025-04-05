@@ -5,8 +5,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { PassportModule } from '@nestjs/passport';
 import { UsuarioService } from './usuario.service';
 import { Usuario } from './entities/usuario.entity';
-import { UsuarioStrategy } from './usuario.strategy';
 import { UsuarioController } from './usuario.controller';
+import { JwtStrategy } from '../../common/strategy/jwt.strategy';
 
 @Module({
     imports: [
@@ -21,8 +21,8 @@ import { UsuarioController } from './usuario.controller';
         })
     ],
     controllers: [UsuarioController],
-    providers: [UsuarioService, UsuarioStrategy],
-    exports: [UsuarioStrategy]
+    providers: [UsuarioService, JwtStrategy],
+    exports: [JwtStrategy]
 })
 class UsuarioModule {}
 

@@ -1,8 +1,8 @@
 import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
-import { SenhaUtil } from '../utils/senha.util';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Usuario } from './entities/usuario.entity';
+import { SenhaUtil } from 'src/common/utils/senha.util';
 import { EntrarUsuarioDto } from './dto/entrar-usuario.dto';
 import { FiltrosUsuarioDto } from './dto/filtros-usuario.dto';
 import { CadastrarUsuarioDto } from './dto/cadastrar-usuario.dto';
@@ -33,6 +33,13 @@ class UsuarioService {
 
     async obterPorId(id: number): Promise<Usuario | null> {
         const usuario = await this.repositorio.findOneBy({ id });
+        if (!usuario) return null;
+    
+        return usuario;
+    }
+
+    async obterPorEmail(email: string): Promise<Usuario | null> {
+        const usuario = await this.repositorio.findOneBy({ email });
         if (!usuario) return null;
     
         return usuario;
@@ -73,7 +80,7 @@ class UsuarioService {
     }
 
     async entrar(dto: EntrarUsuarioDto): Promise<Usuario | null> {
-        const usuario = await this.repositorio.findOneBy({ email: dto.email });
+        const usuario = await this.obterPorEmail(dto.email);
         if (!usuario) return null;
 
         const senhaCorreta = await SenhaUtil.validarHash(dto.senha, usuario.senha);
