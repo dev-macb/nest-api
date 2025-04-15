@@ -1,36 +1,61 @@
 import { Exclude } from 'class-transformer';
-import { TiposDeUsuario } from 'src/common/enums/TiposDeUsuarios';
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { ESexos } from 'src/common/enums/ESexos';
+import { ETabelas } from 'src/common/enums/ETabelas';
+import { EUsuarios } from 'src/common/enums/EUsuarios';
+import { UsuarioEndereco } from 'src/modules/usuario-enderecos/entities/usuario-endereco.entity';
+import { Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
-@Entity('usuarios')
+@Entity(ETabelas.USUARIOS)
 class Usuario {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({ enum: TiposDeUsuario, default: TiposDeUsuario.COMUM })
-    tipo: TiposDeUsuario;
+    @Column({ name: 'id_usuario_endereco', nullable: true })
+    idEndereco: number;
 
-    @Column({ unique: true })
-    nome: string;
+    @Column({ enum: EUsuarios, default: EUsuarios.COMUM })
+    tipo: EUsuarios;
+
+    @Column({ length: 11, unique: true })
+    cpf: string;
+
+    @Column({ length: 255 })
+    nomeCompleto: string;
+
+    @Column({ type: Date })
+    nascimento: Date;
+
+    @Column({ enum: ESexos, default: ESexos.OUTRO })
+    sexo: ESexos;
 
     @Column()
-    telefone: string;
+    pcd: boolean;
 
-    @Column({ unique: true })
+    @Column({ length: 100, nullable: true })
+    equipe: string | null;
+
+    @Column({ length: 20, nullable: true })
+    telefone: string | null;
+
+    @Column({ length: 255, unique: true })
     email: string;
 
-    @Column()
+    @Column({ length: 255 })
     @Exclude()
     senha: string;
 
-    @Column({ default: false })
+    @Column({ default: true })
     ativo: boolean;
 
-    @CreateDateColumn()
+    @UpdateDateColumn({ name: 'criado_em' })
     criadoEm: Date;
 
-    @UpdateDateColumn()
+    @CreateDateColumn({ name: 'atualizado_em' })
     atualizadoEm: Date;
+
+    @OneToOne(() => UsuarioEndereco, { cascade: true, eager: true, nullable: true })
+    @JoinColumn({ name: 'id_usuario_endereco' })
+    endereco: UsuarioEndereco;
 }
 
 export { Usuario };

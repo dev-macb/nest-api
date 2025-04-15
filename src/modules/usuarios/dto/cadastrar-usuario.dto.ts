@@ -1,29 +1,56 @@
-import { Transform } from 'class-transformer';
-import { IsEmail, IsString, Matches, MaxLength, MinLength } from 'class-validator';
+import { Type } from 'class-transformer';
+import { ESexos } from '../../../common/enums/ESexos';
+import { EUsuarios } from '../../../common/enums/EUsuarios';
+import { IsBoolean, IsDate, IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, Length, ValidateNested } from 'class-validator';
 
 class CadastrarUsuarioDto {
-    @IsString()
-    @MinLength(3, { message: 'O nome deve ter no mínimo 3 caracteres' })
-    @MaxLength(255, { message: 'O nome não pode exceder 255 caracteres' })
-    @Transform(({ value }) => value.trim())
-    nome: string;
+    @IsEnum(EUsuarios)
+    @IsOptional()
+    tipo?: EUsuarios = EUsuarios.COMUM;
 
     @IsString()
-    @Matches(/^\+?[1-9]\d{1,14}$/, { message: 'Número de telefone inválido' }) 
-    telefone: string;
+    @Length(11, 11)
+    @IsNotEmpty()
+    cpf: string;
 
-    @IsEmail({}, { message: 'E-mail inválido' })
-    @Transform(({ value }) => value.toLowerCase().trim())
+    @IsString()
+    @Length(5, 255)
+    @IsNotEmpty()
+    nomeCompleto: string;
+
+    @IsDate()
+    @Type(() => Date)
+    nascimento: Date;
+
+    @IsEnum(ESexos)
+    @IsOptional()
+    sexo: ESexos;
+
+    @IsBoolean()
+    @IsOptional()
+    pcd: boolean;
+
+    @IsString()
+    @IsOptional()
+    @Length(0, 100)
+    equipe?: string | null = null;
+
+    @IsString()
+    @IsOptional()
+    @Length(10, 20)
+    telefone?: string | null = null;
+
+    @IsEmail()
+    @Length(5, 255)
     email: string;
 
     @IsString()
-    @MinLength(8, { message: 'A senha deve ter pelo menos 8 caracteres' })
-    @MaxLength(100, { message: 'A senha não pode exceder 100 caracteres' })
-    @Matches(/[A-Z]/, { message: 'A senha deve conter pelo menos uma letra maiúscula' })
-    @Matches(/[a-z]/, { message: 'A senha deve conter pelo menos uma letra minúscula' })
-    @Matches(/\d/, { message: 'A senha deve conter pelo menos um número' })
-    @Matches(/[\W_]/, { message: 'A senha deve conter pelo menos um caractere especial' })
+    @Length(8, 255)
     senha: string;
+
+    @IsBoolean()
+    @IsOptional()
+    ativo?: boolean = true;
 }
 
 export { CadastrarUsuarioDto };

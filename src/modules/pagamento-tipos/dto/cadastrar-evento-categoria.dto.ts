@@ -1,0 +1,3 @@
+class CadastrarEventoCategoriaDto {}
+
+export { CadastrarEventoCategoriaDto };

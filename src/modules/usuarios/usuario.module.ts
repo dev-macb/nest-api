@@ -6,11 +6,11 @@ import { PassportModule } from '@nestjs/passport';
 import { UsuarioService } from './usuario.service';
 import { Usuario } from './entities/usuario.entity';
 import { UsuarioController } from './usuario.controller';
-import { JwtStrategy } from '../../common/strategy/jwt.strategy';
+import { UsuarioGuard } from 'src/common/guards/usuario.guard';
+import { UsuarioStrategy } from 'src/common/strategies/usuario.strategy';
 
 @Module({
     imports: [
-        PassportModule,
         TypeOrmModule.forFeature([Usuario]),
         JwtModule.registerAsync({
             inject: [ConfigService],
@@ -18,11 +18,22 @@ import { JwtStrategy } from '../../common/strategy/jwt.strategy';
                 secret: configService.getOrThrow('JWT_USUARIO'),
                 signOptions: { expiresIn: '1h' },
             })
-        })
+        }),
+        PassportModule
     ],
-    controllers: [UsuarioController],
-    providers: [UsuarioService, JwtStrategy],
-    exports: [JwtStrategy]
+    controllers: [
+        UsuarioController
+    ],
+    providers: [
+        UsuarioService, 
+        UsuarioGuard, 
+        UsuarioStrategy
+    ],
+    exports: [
+        UsuarioService, 
+        UsuarioGuard, 
+        JwtModule
+    ]
 })
 class UsuarioModule {}
 

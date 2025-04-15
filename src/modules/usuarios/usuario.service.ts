@@ -2,9 +2,9 @@ import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Usuario } from './entities/usuario.entity';
-import { SenhaUtil } from 'src/common/utils/senha.util';
+import { SenhaUtil } from '../../common/utils/senha.util';
 import { EntrarUsuarioDto } from './dto/entrar-usuario.dto';
-import { FiltrosUsuarioDto } from './dto/filtros-usuario.dto';
+import { FiltrosUsuarioDto } from './dto/filtros-usuario.dto.';
 import { CadastrarUsuarioDto } from './dto/cadastrar-usuario.dto';
 import { AtualizarUsuarioDto } from './dto/atualizar-usuario.dto';
 
@@ -12,81 +12,99 @@ import { AtualizarUsuarioDto } from './dto/atualizar-usuario.dto';
 class UsuarioService {
     constructor (
         @InjectRepository(Usuario)
-        private readonly repositorio: Repository<Usuario>
+        private readonly usuarioRepository: Repository<Usuario>
     ) { }
 
     async obterTodos(filtros?: FiltrosUsuarioDto): Promise<Omit<Usuario, 'senha'>[]> {
-        const query = this.repositorio.createQueryBuilder('usuario');
-    
+        const query = this.usuarioRepository
+            .createQueryBuilder('usuario')
+            .leftJoinAndSelect('usuario.endereco', 'endereco');
+
         if (filtros?.nome) {
-            query.andWhere('usuario.nome LIKE :nome', { nome: `%${filtros.nome}%` });
+            query.andWhere('usuario.nomeCompleto LIKE :nome', { nome: `%${filtros.nome}%` });
         }
-    
+
         if (filtros?.ativo !== undefined) {
             query.andWhere('usuario.ativo = :ativo', { ativo: filtros.ativo });
         }
-    
+
         const usuarios = await query.getMany();
-    
+
         return usuarios.map(({ senha, ...usuarioSemSenha }) => usuarioSemSenha);
     }
 
-    async obterPorId(id: number): Promise<Usuario | null> {
-        const usuario = await this.repositorio.findOneBy({ id });
+    async obterPorId(id: number): Promise<Omit<Usuario, 'senha'> | null> {
+        const usuario = await this.usuarioRepository.findOne({ 
+            where: { id },
+            relations: ['endereco']
+        });
+
         if (!usuario) return null;
-    
-        return usuario;
+
+        const { senha, ...usuarioSemSenha } = usuario;
+        return usuarioSemSenha;
     }
 
     async obterPorEmail(email: string): Promise<Usuario | null> {
-        const usuario = await this.repositorio.findOneBy({ email });
-        if (!usuario) return null;
-    
-        return usuario;
+        return await this.usuarioRepository.findOne({ 
+            where: { email },
+            relations: ['endereco']
+        });
     }
 
     async cadastrar(dto: CadastrarUsuarioDto): Promise<Omit<Usuario, 'senha'>> {
-        const usuario = this.repositorio.create(dto);
-
+        const usuario = this.usuarioRepository.create(dto);
         usuario.senha = await SenhaUtil.gerarHash(dto.senha);
 
-        const usuarioSalvo = await this.repositorio.save(usuario);
-
+        const usuarioSalvo = await this.usuarioRepository.save(usuario);
         const { senha, ...usuarioSemSenha } = usuarioSalvo;
+        
         return usuarioSemSenha;
     }
 
     async atualizar(id: number, dto: AtualizarUsuarioDto): Promise<Omit<Usuario, 'senha'> | null> {
-        const usuario = await this.obterPorId(id);
+        const usuario = await this.usuarioRepository.findOne({ 
+            where: { id },
+            relations: ['endereco']
+        });
+
         if (!usuario) return null;
 
         if (dto.senha) {
-          usuario.senha = await SenhaUtil.gerarHash(dto.senha);
+            usuario.senha = await SenhaUtil.gerarHash(dto.senha);
         }
 
-        this.repositorio.merge(usuario, dto);
+        this.usuarioRepository.merge(usuario, dto);
+        const usuarioAtualizado = await this.usuarioRepository.save(usuario);
+        const { senha, ...usuarioSemSenha } = usuarioAtualizado;
 
-        const usuarioSalvo = await this.repositorio.save(usuario);
-
-        const { senha, ...usuarioSemSenha } = usuarioSalvo;
         return usuarioSemSenha;
     }
 
-    async remover(id: number): Promise<Usuario | null> {
-        const usuario = await this.obterPorId(id);
+    async remover(id: number): Promise<Omit<Usuario, 'senha'> | null> {
+        const usuario = await this.usuarioRepository.findOne({ 
+            where: { id },
+            relations: ['endereco']
+        });
+
         if (!usuario) return null;
 
-        return this.repositorio.remove(usuario);
+        await this.usuarioRepository.remove(usuario);
+        const { senha, ...usuarioSemSenha } = usuario;
+
+        return usuarioSemSenha;
     }
 
-    async entrar(dto: EntrarUsuarioDto): Promise<Usuario | null> {
+    async entrar(dto: EntrarUsuarioDto): Promise<Omit<Usuario, 'senha'> | null> {
         const usuario = await this.obterPorEmail(dto.email);
         if (!usuario) return null;
-
+        
         const senhaCorreta = await SenhaUtil.validarHash(dto.senha, usuario.senha);
         if (!senhaCorreta) return null;
 
-        return usuario;
+        const { senha, ...usuarioSemSenha } = usuario;
+
+        return usuarioSemSenha;
     }
 }
 

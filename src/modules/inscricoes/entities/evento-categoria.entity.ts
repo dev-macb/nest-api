@@ -1,0 +1,5 @@
+class EventoCategoria {
+    
+}
+
+export { EventoCategoria };
